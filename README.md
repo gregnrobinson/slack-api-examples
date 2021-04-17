@@ -6,7 +6,7 @@
   * [Create User Token](#create-user-token)
 - [Examples](#examples)
   * [Create channels from an array](#create-channels-from-an-array)
-  * [Rename channel prefixes](#rename-public-channel-prefixes)
+  * [Rename channel prefixes](#rename-channel-prefixes)
   * [Export all public channels](#export-all-public-channels)
   * [Export all public channels that have 1 member](#export-all-public-channels-that-have-1-member)
   * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
@@ -181,7 +181,7 @@ for i in ${CHANNEL_NAMES[@]}; do
 done
 ```
 
-## Rename public channel prefixes
+## Rename channel prefixes
 Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to rename.
 ### API Reference: https://api.slack.com/methods/conversations.rename
 ```sh
