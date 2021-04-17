@@ -162,11 +162,10 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 ## Export all public channels
 ### API Reference: https://api.slack.com/methods/conversations.list
 ```sh                
-TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-URL='https://slack.com/api/conversations.list'
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+URL="https://slack.com/api/conversations.list"
 
-  curl -X GET -H "Authorization: Bearer $TOKEN" \
-  -H 'Content-type: application/x-www-form-urlencoded' \
+curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
   $URL > channels.list.json
 ```
 ## Export all public channels that have 1 member
@@ -180,7 +179,7 @@ cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' 
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
-TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 
 for ID in $CHANNEL_IDS; do
   URL="https://slack.com/api/conversations.join?channel=$ID&pretty=1"
@@ -196,7 +195,7 @@ done
 
 Useful for finding channels with similar names.
 ```sh
-TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 OLD_PREFIX="t-"
 NEW_PREFIX="tech-"
 
@@ -217,8 +216,8 @@ done
 ## Export all users
 ### API Reference: https://api.slack.com/methods/users.list
 ```sh
-TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-URL='https://slack.com/api/users.list'
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+URL="https://slack.com/api/users.list"
 
 curl -X GET -H "Authorization: Bearer $TOKEN" \
 -H 'Content-type: application/x-www-form-urlencoded' \
@@ -244,7 +243,7 @@ cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | gre
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
-TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
 
 for ID in $CHANNEL_IDS; do
@@ -259,7 +258,7 @@ done
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
-TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 STRING_MATCH="website"
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
 
