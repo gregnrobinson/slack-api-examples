@@ -5,10 +5,11 @@ Examples for interacting with a Slack workspace through the REST API.
 
 1. Go to https://api.slack.com/apps and create an application. Under ***OAuth and Permissions > Scopes > Bot Token Scopes*** add the following permissions: 
 
-    - chat:write.public
+    - channels:manage
     - channels:join
-    - chat:write
-    - chat:write.customize
+    - channels:read
+    - channels:history
+    - users:read
 
 2. Copy the *Bot User OAuth Token* that starts with ***xoxb-*** and store it somewhere secure. This will be used to authenticate to to the Slack REST API.
 
