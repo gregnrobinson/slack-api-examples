@@ -197,6 +197,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 #### Export all Slack user emails to a file
 Return only the email address attribute and exclude any fields that are `null`.
+    
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
 
 #### Export all Slack Guest user emails to a file
