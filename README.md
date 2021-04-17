@@ -20,7 +20,7 @@ Examples for interacting with a Slack workspace through the REST API.
 ### Export all channels in a Slack Workspace
 #### API Reference: https://api.slack.com/methods/conversations.list
                 
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+    TOKEN='xoxb-1509569629413-1996816964960-yoyQoN7WrNcyy6vILVCViEur'
     URL='https://slack.com/api/conversations.list'
 
     curl -X GET -H "Authorization: Bearer $TOKEN" \
@@ -29,7 +29,7 @@ Examples for interacting with a Slack workspace through the REST API.
 
 ### Add a Bot to all public channels
 #### API Reference: https://api.slack.com/methods/conversations.join
-*Note: You must export all the public channels using the code snippet above before running this code snippet*
+*Note: You must export all the public channels to a file named channels.list.json before executing*
 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
@@ -49,6 +49,19 @@ Examples for interacting with a Slack workspace through the REST API.
     curl -X GET -H "Authorization: Bearer $TOKEN" \
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > users.list.json
+
+### Archive public Slack channels that have only 1 member
+#### API Reference: https://api.slack.com/methods/admin.conversations.archive
+*Note: You must export all the public channels to a file named channels.list.json before executing*
+                
+    CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
+    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+
+    for ID in $CHANNEL_IDS; do
+        URL="https://slack.com/api/admin.conversations.archive?channel=$ID&pretty=1"
+        echo $URL
+        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+    done
 
 
 
