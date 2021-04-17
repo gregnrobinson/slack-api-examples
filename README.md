@@ -161,7 +161,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 ## Export all public channels in a Slack Workspace
 ### API Reference: https://api.slack.com/methods/conversations.list
                 
-    TOKEN='xoxb-1509569629413-1996816964960-yoyQoN7WrNcyy6vILVCViEur'
+    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
     URL='https://slack.com/api/conversations.list'
 
     curl -X GET -H "Authorization: Bearer $TOKEN" \
