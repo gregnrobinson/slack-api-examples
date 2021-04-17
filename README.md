@@ -7,6 +7,7 @@
 - [Examples](#examples)
   * [Create channels from an array](#create-channels-from-an-array)
   * [Rename channel prefixes](#rename-channel-prefixes)
+  * [Archive channels](#archive-channels)
   * [Export all public channels](#export-all-public-channels)
   * [Export all public channels that have 1 member](#export-all-public-channels-that-have-1-member)
   * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
@@ -199,6 +200,27 @@ do
   CHANNEL_NAME=${i#*=}
   
   URL="https://slack.com/api/conversations.rename?channel=${CHANNEL_ID}&name=${NEW_PREFIX}${CHANNEL_NAME//$OLD_PREFIX}&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
+
+## Archive channels
+Useful for renaming channels in bulk. Unfortunately Bot tokens can only archive channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to archive.
+#### API Reference: https://api.slack.com/methods/conversations.rename
+```sh
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
+
+STRING_MATCH="channel-"
+
+declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g'))
+
+for i in "${arr[@]}" 
+do
+  URL="https://slack.com/api/conversations.archive?channel=$i&pretty=1"
   
   echo $URL
   
