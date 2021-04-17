@@ -8,8 +8,8 @@
   * [Export all public channels](#export-all-public-channels)
   * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
   * [Export all users](#export-all-users)
-  * [Export all user emails to a file](#export-all-user-emails-to-a-file)
-  * [Export all guest user emails to a file](#export-all-guest-user-emails-to-a-file)
+  * [Export all user emails](#export-all-user-emails)
+  * [Export all guest user emails](#export-all-guest-user-emails)
   * [Archive all public channels that have only 1 member](#archive-all-public-channels-that-have-only-1-member)
   * [Archive all public channels that match a string condition](#archive-all-public-channels-that-match-a-string-condition)
 - [Reference](#reference)
@@ -192,14 +192,14 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > users.list.json
 
-## Export all user emails to a file
+## Export all user emails
 *Note: You must first follow the step [Export all users](#export-all-users) before executing*
 
 Return only the email address attribute and exclude any fields that are `null`.
     
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
 
-## Export all guest user emails to a file
+## Export all guest user emails
 *Note: You must first follow the step [Export all users](#export-all-users) before executing*
 
 We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this domain. Only emails that do **NOT** contain the company domain will get exported.
