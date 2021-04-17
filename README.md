@@ -164,13 +164,18 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 3. Install the application to the workspace.
 
+## Set bot token variable
+The code snippets below require the token to be stored as a variable called `TOKEN`
+```sh
+export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+```
+
 # Examples
 
 ## Create channels
 Useful for creating several channels using one script.
 #### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_NAMES=("ch-1" "ch-2" "ch-3" "ch-4" "ch-5")
 
 for i in ${CHANNEL_NAMES[@]}; do
@@ -182,14 +187,14 @@ for i in ${CHANNEL_NAMES[@]}; do
 done
 ```
 
-***You can optionally create an array with however many channel names you would like to create to test the speed of operation at scale***
+***Optionally, you can create an array using a for loop with however many channels you would like to create to test the speed of operation at scale***
 ```sh
-channel_prefix="channel"
+channel_prefix="ch-"
 channel_count="50"
 
 CHANNEL_NAMES=()
 for ((i=1; i<=$channel_count; i++)); do
-   CHANNEL_NAMES[i]=$channel_prefix-${i}
+   CHANNEL_NAMES[i]=${channel_prefix}${i}
 done
 
 echo "${CHANNEL_NAMES[@]}"
@@ -203,15 +208,14 @@ for i in ${CHANNEL_NAMES[@]}; do
 done
 ```
 
-## Rename channel prefixes
+## Rename channels prefixes
 Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to rename.
 #### API Reference: https://api.slack.com/methods/conversations.rename
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
 
 OLD_PREFIX="ch-"
-NEW_PREFIX="channel-"
+NEW_PREFIX="ch-new-"
 
 declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$OLD_PREFIX'")) | (.id + "=" + .name)' | sed -e 's/"//g'))
 
@@ -232,10 +236,9 @@ done
 Useful for renaming channels in bulk. Unfortunately Bot tokens can only archive channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to archive.
 #### API Reference: https://api.slack.com/methods/conversations.archive
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
 
-STRING_MATCH="channel-"
+STRING_MATCH="ch-new-"
 
 declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g'))
 
@@ -252,7 +255,6 @@ done
 ## Export all public channels
 #### API Reference: https://api.slack.com/methods/conversations.list
 ```sh                
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 URL="https://slack.com/api/conversations.list?exclude_archived=true&pretty=1"
 
 curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
@@ -262,8 +264,6 @@ curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-ww
 Useful for finding inactive slack channels by comparing the last_read attribute agaisnt a set date. If the last_read attribute is less than the DATE variable, the name of the slack channel is exported to a file. The script iterates over every public slack channel until complete.
 
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
-
 DATE="2021-04-01" #YYYY-MM-DD
 
 DATE_EPOCH=$(date -jf "%Y-%m-%d %H:%M:%S" "$DATE 00:00:00" +%s)
@@ -292,7 +292,6 @@ cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' 
 #### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
 
 for ID in $CHANNEL_IDS; do
@@ -306,7 +305,6 @@ done
 ## Export all users
 #### API Reference: https://api.slack.com/methods/users.list
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 URL="https://slack.com/api/users.list"
 
 curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
@@ -332,7 +330,6 @@ cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | gre
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 #### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
 
 for ID in $CHANNEL_IDS; do
@@ -347,7 +344,6 @@ done
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 #### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 STRING_MATCH="website"
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
 
