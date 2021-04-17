@@ -20,7 +20,7 @@
 - [Reference](#reference)
 # Overview
 
-This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple for loops and jq we can get any json dataset using the slack api and run queries against the data we want using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
+This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple iteration coupled with jq we can extract and transform any json dataset using the slack api by running queries against a Slack workspace using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
 
 # Logic Explanation
 
@@ -207,7 +207,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
 
     COMPANY_DOMAIN=company.com
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
- 
+
 ## Archive public Slack channels that have only 1 member
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 *Note: You must export all the public channels to a file named channels.list.json before executing*
