@@ -5,7 +5,7 @@
   * [Create Bot Token](#create-bot-token)
   * [Create User Token](#create-user-token)
 - [Examples](#examples)
-  * [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace)
+  * [Export all public channels](#export-all-public-channels)
   * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
   * [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace)
   * [Export all user emails to a file](#export-all-user-emails-to-a-file)
@@ -159,7 +159,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 # Examples
 
-## Export all public channels in a Slack Workspace
+## Export all public channels
 ### API Reference: https://api.slack.com/methods/conversations.list
                 
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
@@ -208,7 +208,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
 
 ## Archive all public channels that have only 1 member
-*Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
+*Note: You must first follow the step [Export all public channels](#export-all-public-channels) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 
                 
@@ -222,7 +222,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
     done
 
 ## Archive all public channels that match a string condition
-*Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
+*Note: You must first follow the step [Export all public channels](#export-all-public-channels) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 
 
