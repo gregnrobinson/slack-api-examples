@@ -205,22 +205,6 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
 
     COMPANY_DOMAIN=company.com
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
-
-## Export the emails for every user in a Slack Workspace
-### API Reference: https://api.slack.com/methods/users.profile.get
-
-    USER_IDS=$(cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g')
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-
-    for ID in $USER_IDS; do
-        URL="https://slack.com/api/users.profile.get?user=$ID&pretty=1"
-        echo $URL
-        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
-    done
-
-    curl -X GET -H "Authorization: Bearer $TOKEN" \
-    -H 'Content-type: application/x-www-form-urlencoded' \
-    $URL > users.list.json
  
 ## Archive public Slack channels that have only 1 member
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
