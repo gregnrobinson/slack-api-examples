@@ -2,7 +2,7 @@
 
 This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple for loops and jq we can get any json dataset using the slack api and run queries against the data we want using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
 
-Suppose we have the following JSON file named ***channels.list.json*** that contains the public slack channels for a company retrieved using a GET Request.
+Suppose we have the following JSON file named ***channels.list.json*** that contains the public slack channels for a company retrieved using a GET Request with the Slack API.
 ```
 {
   "ok": true,
@@ -109,7 +109,7 @@ The output at his point is `"C01F9XLF1SE"`. To remove the quotes we can use some
 cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g'
 ```
 
-We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed into a for loop that executes slack API requests. The variable only contains a single ID but if jq returned multiple IDs they would appear in the variable as `C01F9XLF1SE C01EWFV0DV9`. This logic is the basis for all the examples that are shown below and these snippets can be executed at any scale. Imagine a company that has 400+ channels and they want a quick way to find channels that have only a single member. I use this as an example because I have seen channels where only 1 person is a member because either people leave or it was used as a test for for a Slack integration and it never gets used afterwards.
+We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed into a for loop that executes slack API requests. The variable only contains a single ID but if jq returned multiple IDs they would appear in the variable as `C01F9XLF1SE C01EWFV0DV9`. This logic is the basis for all the examples that are shown below and these snippets can be executed at any scale. Imagine a company that has 400+ channels and they want a quick way to find channels that have only a single member. I use this as an example because I have seen channels where only 1 user is a member because either people leave or it was used as a test for a Slack integration and it never gets used afterwards.
 
 ## Prerequsiites
 
@@ -121,7 +121,7 @@ We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed
     - channels:history
     - users:read
 
-2. Copy the *Bot User OAuth Token* that starts with ***xoxb-*** and store it somewhere secure. This will be used to authenticate to to the Slack REST API.
+2. Copy the *Bot User OAuth Token* that starts with `xoxb-` and store it somewhere secure. This will be used to authenticate to to the Slack REST API.
 
 3. Install the application to the workspace.
 
@@ -176,6 +176,7 @@ We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed
 ### Archive public Slack channels that match a string condition
 #### API Reference: https://api.slack.com/methods/admin.conversations.archive
 *Note: You must export all the public channels to a file named channels.list.json before executing*
+
     STRING_MATCH="website"
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
