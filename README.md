@@ -11,6 +11,8 @@
     + [API Reference: https://api.slack.com/methods/conversations.join](#api-reference--https---apislackcom-methods-conversationsjoin)
   * [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace)
     + [API Reference: https://api.slack.com/methods/users.list](#api-reference--https---apislackcom-methods-userslist)
+    + [Export all Slack user emails to a file](#export-all-slack-user-emails-to-a-file)
+    + [Export all Slack guest user emails to a file](#export-all-slack-guest-user-emails-to-a-file)
   * [Archive public Slack channels that have only 1 member](#archive-public-slack-channels-that-have-only-1-member)
     + [API Reference: https://api.slack.com/methods/admin.conversations.archive](#api-reference--https---apislackcom-methods-adminconversationsarchive)
   * [Archive public Slack channels that match a string condition](#archive-public-slack-channels-that-match-a-string-condition)
