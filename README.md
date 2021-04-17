@@ -17,7 +17,7 @@ Examples for interacting with a Slack workspace through the REST API.
 
 ## Examples
 
-### Export all channels in a Slack Workspace
+### Export all public channels in a Slack Workspace
 #### API Reference: https://api.slack.com/methods/conversations.list
                 
     TOKEN='xoxb-1509569629413-1996816964960-yoyQoN7WrNcyy6vILVCViEur'
@@ -40,7 +40,7 @@ Examples for interacting with a Slack workspace through the REST API.
         curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
     done
 
-### Export all users in Slack Workspace
+### Export all users in a Slack Workspace
 #### API Reference: https://api.slack.com/methods/users.list
 
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
