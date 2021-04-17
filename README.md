@@ -20,8 +20,8 @@ Examples for interacting with a Slack workspace through the REST API.
 ### Export all channels in a Slack Workspace
 #### API Reference: https://api.slack.com/methods/conversations.list
                 
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX';
-    URL='https://slack.com/api/conversations.list';
+    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+    URL='https://slack.com/api/conversations.list'
 
     curl -X GET -H "Authorization: Bearer $TOKEN" \
     -H 'Content-type: application/x-www-form-urlencoded' \
