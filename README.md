@@ -167,7 +167,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 ## Create channels from an array
 Useful for creating many channels quickly
-### API Reference: https://api.slack.com/methods/conversations.create
+#### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_NAMES=("ch-1" "ch-2" "ch-3" "ch-4" "ch-5")
@@ -183,7 +183,7 @@ done
 
 ## Rename channel prefixes
 Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to rename.
-### API Reference: https://api.slack.com/methods/conversations.rename
+#### API Reference: https://api.slack.com/methods/conversations.rename
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
@@ -207,7 +207,7 @@ done
 ```
 
 ## Export all public channels
-### API Reference: https://api.slack.com/methods/conversations.list
+#### API Reference: https://api.slack.com/methods/conversations.list
 ```sh                
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 URL="https://slack.com/api/conversations.list"
@@ -222,7 +222,7 @@ cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' 
 ```
 
 ## Add a bot to all public channels
-### API Reference: https://api.slack.com/methods/conversations.join
+#### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
@@ -237,7 +237,7 @@ for ID in $CHANNEL_IDS; do
 done
 ```
 ## Export all users
-### API Reference: https://api.slack.com/methods/users.list
+#### API Reference: https://api.slack.com/methods/users.list
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 URL="https://slack.com/api/users.list"
@@ -264,7 +264,7 @@ cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | gre
 ```
 ## Archive all public channels that have only 1 member
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
-### API Reference: https://api.slack.com/methods/admin.conversations.archive
+#### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
@@ -279,7 +279,7 @@ done
 ```
 ## Archive all public channels that match a string condition
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
-### API Reference: https://api.slack.com/methods/admin.conversations.archive
+#### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 STRING_MATCH="website"
