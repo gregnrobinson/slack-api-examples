@@ -1,6 +1,6 @@
 # Overview
 
-This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple for loops and jq we can get any json dataset using the slack api and run queries against the data we want using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment).
+This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple for loops and jq we can get any json dataset using the slack api and run queries against the data we want using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
 
 Suppose we have the following JSON file named ***channels.list.json*** that contains the public slack channels for a company retrieved using a GET Request.
 ```
@@ -88,6 +88,7 @@ If I wanted to query, filter and then store only channel IDs that contain 1 memb
 ```
 cat ./channels.list.json | jq
 ```
+
 Then we need to tell jq we want to process the channels array.
 ```
 cat ./channels.list.json | jq '.channels[]'
