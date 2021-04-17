@@ -165,7 +165,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 3. Install the application to the workspace.
 
 ## Set bot token variable
-The code snippets below require the token to be stored as a variable called `TOKEN`.
+The code snippet below requires the token to be stored in a variable called `TOKEN`. Paste this snippet into the terminal and update the value with your token.
 ```sh
 export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ```
