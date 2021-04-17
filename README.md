@@ -1,21 +1,21 @@
 # Table of Contents
 - [Overview](#overview)
 - [Logic Explanation](#logic-explanation)
-  * [Prerequsiites](#prerequsiites)
-    + [Create Bot Token](#create-bot-token)
-    + [Create User Token](#create-user-token)
-  * [Examples](#examples)
-    + [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace)
-      - [API Reference: https://api.slack.com/methods/conversations.list](#api-reference--https---apislackcom-methods-conversationslist)
-    + [Add a Bot to all public channels](#add-a-bot-to-all-public-channels)
-      - [API Reference: https://api.slack.com/methods/conversations.join](#api-reference--https---apislackcom-methods-conversationsjoin)
-    + [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace)
-      - [API Reference: https://api.slack.com/methods/users.list](#api-reference--https---apislackcom-methods-userslist)
-    + [Archive public Slack channels that have only 1 member](#archive-public-slack-channels-that-have-only-1-member)
-      - [API Reference: https://api.slack.com/methods/admin.conversations.archive](#api-reference--https---apislackcom-methods-adminconversationsarchive)
-    + [Archive public Slack channels that match a string condition](#archive-public-slack-channels-that-match-a-string-condition)
-      - [API Reference: https://api.slack.com/methods/admin.conversations.archive](#api-reference--https---apislackcom-methods-adminconversationsarchive-1)
-    + [Reference](#reference)
+- [Prerequsiites](#prerequsiites)
+  * [Create Bot Token](#create-bot-token)
+  * [Create User Token](#create-user-token)
+- [Examples](#examples)
+  * [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace)
+    + [API Reference: https://api.slack.com/methods/conversations.list](#api-reference--https---apislackcom-methods-conversationslist)
+  * [Add a Bot to all public channels](#add-a-bot-to-all-public-channels)
+    + [API Reference: https://api.slack.com/methods/conversations.join](#api-reference--https---apislackcom-methods-conversationsjoin)
+  * [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace)
+    + [API Reference: https://api.slack.com/methods/users.list](#api-reference--https---apislackcom-methods-userslist)
+  * [Archive public Slack channels that have only 1 member](#archive-public-slack-channels-that-have-only-1-member)
+    + [API Reference: https://api.slack.com/methods/admin.conversations.archive](#api-reference--https---apislackcom-methods-adminconversationsarchive)
+  * [Archive public Slack channels that match a string condition](#archive-public-slack-channels-that-match-a-string-condition)
+    + [API Reference: https://api.slack.com/methods/admin.conversations.archive](#api-reference--https---apislackcom-methods-adminconversationsarchive-1)
+- [Reference](#reference)
 # Overview
 
 This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple for loops and jq we can get any json dataset using the slack api and run queries against the data we want using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
@@ -131,10 +131,10 @@ cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | 
 
 We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed into a for loop that executes slack API requests. The variable only contains a single ID but if jq returned multiple IDs they would appear in the variable as `C01F9XLF1SE C01EWFV0DV9`. This logic is the basis for all the examples that are shown below and these snippets can be executed at any scale. Imagine a company that has 400+ channels and they want a quick way to find channels that have only a single member. I use this as an example because I have seen channels where only 1 user is a member because either people leave or it was used as a test for a Slack integration and it never gets used afterwards.
 
-## Prerequsiites
+# Prerequsiites
 To execute any of the examples that use `admin.*` as the API method, you need the [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) version of Slack. Slack used to have these features available on the [Standard](https://slack.com/intl/en-ca/pricing/standard) plan but deprecated usage of them as of February 2021. All examples without `admin.*` can be executed by anyone with a free workspace using a Bot Token.
 
-### Create Bot Token
+## Create Bot Token
 1. Go to https://api.slack.com/apps and create an application. Under ***OAuth and Permissions > Scopes > Bot Token Scopes*** add the following permissions: 
 
     - channels:manage
@@ -146,7 +146,7 @@ To execute any of the examples that use `admin.*` as the API method, you need th
 2. Copy the *Bot User OAuth Token* that starts with `xoxb-` and store it somewhere secure. This will be used to authenticate to to the Slack REST API.
 
 3. Install the application to the workspace.
-### Create User Token
+## Create User Token
 To execute the examples using `admin.*` in the request URL, a User Token is required. To create a User Token:
 1. Go to https://api.slack.com/apps and create an application. Under ***OAuth and Permissions > Scopes > User Token Scopes*** add the following permissions: 
 
@@ -156,10 +156,10 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 3. Install the application to the workspace.
 
-## Examples
+# Examples
 
-### Export all public channels in a Slack Workspace
-#### API Reference: https://api.slack.com/methods/conversations.list
+## Export all public channels in a Slack Workspace
+### API Reference: https://api.slack.com/methods/conversations.list
                 
     TOKEN='xoxb-1509569629413-1996816964960-yoyQoN7WrNcyy6vILVCViEur'
     URL='https://slack.com/api/conversations.list'
@@ -168,8 +168,8 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > channels.list.json
 
-### Add a Bot to all public channels
-#### API Reference: https://api.slack.com/methods/conversations.join
+## Add a Bot to all public channels
+### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must export all the public channels to a file named channels.list.json before executing*
 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
@@ -181,8 +181,8 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
         curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
     done
 
-### Export all users in a Slack Workspace
-#### API Reference: https://api.slack.com/methods/users.list
+## Export all users in a Slack Workspace
+### API Reference: https://api.slack.com/methods/users.list
 
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
     URL='https://slack.com/api/users.list'
@@ -191,8 +191,8 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > users.list.json
  
-### Archive public Slack channels that have only 1 member
-#### API Reference: https://api.slack.com/methods/admin.conversations.archive
+## Archive public Slack channels that have only 1 member
+### API Reference: https://api.slack.com/methods/admin.conversations.archive
 *Note: You must export all the public channels to a file named channels.list.json before executing*
                 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
@@ -204,8 +204,8 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
         curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
     done
 
-### Archive public Slack channels that match a string condition
-#### API Reference: https://api.slack.com/methods/admin.conversations.archive
+## Archive public Slack channels that match a string condition
+### API Reference: https://api.slack.com/methods/admin.conversations.archive
 *Note: You must export all the public channels to a file named channels.list.json before executing*
 
     STRING_MATCH="website"
@@ -218,7 +218,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
         curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
     done
 
-### Reference
+# Reference
 
 https://stedolan.github.io/jq/manual/
 
