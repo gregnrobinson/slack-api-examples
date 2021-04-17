@@ -176,7 +176,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 ## Add a Bot to all public channels
 ### API Reference: https://api.slack.com/methods/conversations.join
-*Note: You must export all the public channels to a file named channels.list.json before executing*
+*Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
@@ -210,7 +210,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
 
 ## Archive public Slack channels that have only 1 member
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
-*Note: You must export all the public channels to a file named channels.list.json before executing*
+*Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
                 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
@@ -223,7 +223,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
 
 ## Archive public Slack channels that match a string condition
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
-*Note: You must export all the public channels to a file named channels.list.json before executing*
+*Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
 
     STRING_MATCH="website"
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
