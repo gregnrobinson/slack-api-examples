@@ -242,9 +242,8 @@ done
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 URL="https://slack.com/api/users.list"
 
-curl -X GET -H "Authorization: Bearer $TOKEN" \
--H 'Content-type: application/x-www-form-urlencoded' \
-$URL > users.list.json
+curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
+  $URL > users.list.json
 ```
 ## Export all user emails
 *Note: You must first complete the step [Export all users](#export-all-users) before executing*
