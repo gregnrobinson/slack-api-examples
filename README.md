@@ -200,7 +200,7 @@ Return only the email address attribute and exclude any fields that are `null`.
     
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
 
-### Export all Slack Guest user emails to a file
+### Export all Slack guest user emails to a file
 We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this domain. Only emails that do **NOT** contain the company domain will get exported.
 
     COMPANY_DOMAIN=company.com
