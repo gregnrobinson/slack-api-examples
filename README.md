@@ -1,8 +1,8 @@
 # Overview
 
-Examples for interacting with a Slack workspace through the REST API. Using simple for loops and jq we can get any json dataset using the slack api and then query for the data we want using assignments. An example of this logic would be:
+This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple for loops and jq we can get any json dataset using the slack api and run queries against the data we want using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment).
 
-Suppose we have the following JSON file named ***channels.list.json*** that contains the public slack channels for my workspace that we retrieved using a GET Request.
+Suppose we have the following JSON file named ***channels.list.json*** that contains the public slack channels for a company retrieved using a GET Request.
 ```
 {
   "ok": true,
@@ -84,22 +84,31 @@ Suppose we have the following JSON file named ***channels.list.json*** that cont
 }
 ```
 
-If I wanted to query, filter and then store only channel IDs that contain 1 member I would run the following command...
+If I wanted to query, filter and then store only channel IDs that contain 1 member we would start by piping the ***channels.list.json*** file into jq.
 ```
-CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
+cat ./channels.list.json | jq
+```
+Then we need to tell jq we want to process the channels array.
+```
+cat ./channels.list.json | jq '.channels[]'
 ```
 
-To make this possible we need to query against the ```num_members``` attribute and use ```== 1``` to filter only the channels where this value is 1. 
+Then we need to query against the `num_members` attribute of the json objects and use `== 1` to return only the channels where `"num_members": 1`.
 ```
-select(.num_members == 1)
+cat ./channels.list.json | jq '.channels[] | select(.num_members == 1)'
 ```
 
-Then we can add an additional filter to return only the ID of the json object where ```num_members``` is 1. This can be done by matching the path for where the id is using ```.id```. At this point the full json path is ```.channels.id```.
+Then we can add an additional filter to return only the ID of the json object where `"num_members": 1`. This can be done by matching the JSON path for the ID starting from the root of JSON file. The full JSON path to return the ID of a channel is `.channels[].id`.
+```
+cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id'
+```
  
 The output at his point is `"C01F9XLF1SE"`. To remove the quotes we can use some sed magic.
 ```
-sed -e 's/"//g'
+cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g'
 ```
+
+We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed into a for loop that executes slack API requests. The variable only contains a single ID but if jq returned multiple IDs they would appear in the variable as `C01F9XLF1SE C01EWFV0DV9`. This logic is the basis for all the examples that are shown below and these snippets can be executed at any scale. Imagine a company that has 400+ channels and they want a quick way to find channels that have only a single member. I use this as an example because I have seen channels where only 1 person is a member because either people leave or it was used as a test for for a Slack integration and it never gets used afterwards.
 
 ## Prerequsiites
 
