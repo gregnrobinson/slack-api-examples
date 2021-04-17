@@ -22,12 +22,13 @@ Examples for interacting with a Slack workspace through the REST API.
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX';
     URL='https://slack.com/api/conversations.list';
 
-    curl -X GET -H "Authorization: Bearer $BOT_TOKEN" \
+    curl -X GET -H "Authorization: Bearer $TOKEN" \
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > channels.list.json
 
-### Add an application to all public channels
+### Add a Bot to all public channels
 #### API Reference: https://api.slack.com/methods/conversations.join
+*Note: You must export all the public channels using the code snippet above before running this code snippet*
 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
@@ -35,7 +36,7 @@ Examples for interacting with a Slack workspace through the REST API.
     for ID in $CHANNEL_IDS; do
         URL="https://slack.com/api/conversations.join?channel=$ID&pretty=1"
         echo $URL
-        curl -X POST -H "Authorization: Bearer $BOT_TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
     done
 
 ### Export all users in Slack Workspace
@@ -44,7 +45,7 @@ Examples for interacting with a Slack workspace through the REST API.
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
     URL='https://slack.com/api/users.list'
 
-    curl -X GET -H "Authorization: Bearer $BOT_TOKEN" \
+    curl -X GET -H "Authorization: Bearer $TOKEN" \
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > users.list.json
 
