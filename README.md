@@ -161,81 +161,117 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 ## Export all public channels
 ### API Reference: https://api.slack.com/methods/conversations.list
-                
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-    URL='https://slack.com/api/conversations.list'
+```sh                
+TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+URL='https://slack.com/api/conversations.list'
 
-    curl -X GET -H "Authorization: Bearer $TOKEN" \
-    -H 'Content-type: application/x-www-form-urlencoded' \
-    $URL > channels.list.json
+  curl -X GET -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-type: application/x-www-form-urlencoded' \
+  $URL > channels.list.json
+```
+## Export all public channels that have 1 member
+*Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
+```sh
+cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' | sed -e 's/"//g' > channels.1member.list
+```
 
 ## Add a bot to all public channels
 ### API Reference: https://api.slack.com/methods/conversations.join
-*Note: You must first follow the step [Export all public channels](#export-all-public-channels) before executing*
+*Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
+```sh
+CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
+TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
 
-    CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+for ID in $CHANNEL_IDS; do
+  URL="https://slack.com/api/conversations.join?channel=$ID&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
 
-    for ID in $CHANNEL_IDS; do
-        URL="https://slack.com/api/conversations.join?channel=$ID&pretty=1"
-        echo $URL
-        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
-    done
+## Rename public channel prefixes
+*Note: You must first complete the step [Export all public channels](#export-all-public-channels) and [Add a bot to all public channels](#add-a-bot-to-all-channels) before executing*
 
-## Export all users in a Slack Workspace
+Useful for finding channels with similar names.
+```sh
+TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+OLD_PREFIX="t-"
+NEW_PREFIX="tech-"
+
+declare -a arr=($(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$SOURCE_PREFIX'")) | (.id + "=" + .name)' | sed -e 's/"//g'))
+
+for i in "${arr[@]}" 
+do
+  CHANNEL_ID=${i%=*}
+  CHANNEL_NAME=${i#*=}
+  
+  URL="https://slack.com/api/conversations.rename?channel=${CHANNEL_ID}&name=${NEW_PREFIX}${CHANNEL_NAME//$OLD_PREFIX}&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
+## Export all users
 ### API Reference: https://api.slack.com/methods/users.list
+```sh
+TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+URL='https://slack.com/api/users.list'
 
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-    URL='https://slack.com/api/users.list'
-
-    curl -X GET -H "Authorization: Bearer $TOKEN" \
-    -H 'Content-type: application/x-www-form-urlencoded' \
-    $URL > users.list.json
-
+curl -X GET -H "Authorization: Bearer $TOKEN" \
+-H 'Content-type: application/x-www-form-urlencoded' \
+$URL > users.list.json
+```
 ## Export all user emails
-*Note: You must first follow the step [Export all users](#export-all-users) before executing*
+*Note: You must first complete the step [Export all users](#export-all-users) before executing*
 
 Return only the email address attribute and exclude any fields that are `null`.
-    
-    cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
-
+```sh   
+cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
+```
 ## Export all guest user emails
-*Note: You must first follow the step [Export all users](#export-all-users) before executing*
+*Note: You must first complete the step [Export all users](#export-all-users) before executing*
 
 We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this domain. Only emails that do **NOT** contain the company domain will get exported.
+```sh
+COMPANY_DOMAIN="company.com"
 
-    COMPANY_DOMAIN=company.com
-    cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
-
+cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
+```
 ## Archive all public channels that have only 1 member
-*Note: You must first follow the step [Export all public channels](#export-all-public-channels) before executing*
+*Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
+```sh
+TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
 
-                
-    CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-
-    for ID in $CHANNEL_IDS; do
-        URL="https://slack.com/api/admin.conversations.archive?channel=$ID&pretty=1"
-        echo $URL
-        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
-    done
-
+for ID in $CHANNEL_IDS; do
+  URL="https://slack.com/api/admin.conversations.archive?channel=$ID&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
 ## Archive all public channels that match a string condition
-*Note: You must first follow the step [Export all public channels](#export-all-public-channels) before executing*
+*Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
+```sh
+TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+STRING_MATCH="website"
+CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
 
 
-    STRING_MATCH="website"
-    CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
-    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
-
-    for ID in $CHANNEL_IDS; do
-        URL="https://slack.com/api/admin.conversations.archive?channel=$ID&pretty=1"
-        echo $URL
-        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
-    done
-
+for ID in $CHANNEL_IDS; do
+  URL="https://slack.com/api/admin.conversations.archive?channel=$ID&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
 # Reference
 
 - https://stedolan.github.io/jq/manual/
