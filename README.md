@@ -5,7 +5,7 @@
   * [Create Bot Token](#create-bot-token)
   * [Create User Token](#create-user-token)
 - [Examples](#examples)
-  * [Create channels from an array](#create-channels-from-an-array)
+  * [Create channels](#create-channels)
   * [Rename channel prefixes](#rename-channel-prefixes)
   * [Archive channels](#archive-channels)
   * [Export all public channels](#export-all-public-channels)
@@ -166,12 +166,33 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 # Examples
 
-## Create channels from an array
-Useful for creating many channels quickly
+## Create channels
+Useful for creating several channels using one script.
 #### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 CHANNEL_NAMES=("ch-1" "ch-2" "ch-3" "ch-4" "ch-5")
+
+for i in ${CHANNEL_NAMES[@]}; do
+  URL="https://slack.com/api/conversations.create?name=$i&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
+
+***You can optionally create an array with however many channel names you would like to create to test the speed of operation at scale***
+```sh
+channel_prefix="channel"
+channel_count="50"
+
+CHANNEL_NAMES=()
+for ((i=1; i<=$channel_count; i++)); do
+   CHANNEL_NAMES[i]=$channel_prefix-${i}
+done
+
+echo "${CHANNEL_NAMES[@]}"
 
 for i in ${CHANNEL_NAMES[@]}; do
   URL="https://slack.com/api/conversations.create?name=$i&pretty=1"
@@ -237,6 +258,30 @@ URL="https://slack.com/api/conversations.list?exclude_archived=true&pretty=1"
 curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
   $URL > channels.list.json
 ```
+## Export all channels that have have not been used before a date
+Useful for finding inactive slack channels by comparing the last_read attribute agaisnt a set date. If the last_read attribute is less than the DATE variable, the name of the slack channel is exported to a file. The script iterates over every public slack channel until complete.
+
+```sh
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+
+DATE="2021-04-01" #YYYY-MM-DD
+
+DATE_EPOCH=$(date -jf "%Y-%m-%d %H:%M:%S" "$DATE 00:00:00" +%s)
+ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list?exclude_archived=true&pretty=1)
+
+declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | .id' | sed -e 's/"//g'))
+
+for i in "${arr[@]}" 
+do
+  URL="https://api.slack.com/api/conversations.info?channel=$i&pretty=1"
+  
+  echo $URL
+  
+  CHANNEL_INFO=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.info?channel=$i&pretty=1)
+  echo $CHANNEL_INFO | jq '.channel | select(.last_read < "'$DATE_EPOCH'").name' >> old.channels.json
+done
+```
+
 ## Export all public channels that have 1 member
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
