@@ -1,7 +1,7 @@
 # Table of Contents
 - [Overview](#overview)
 - [Logic Explanation](#logic-explanation)
-- [Prerequsiites](#prerequsiites)
+- [Prerequisites](#prerequisites)
   * [Create Bot Token](#create-bot-token)
   * [Create User Token](#create-user-token)
 - [Examples](#examples)
@@ -128,7 +128,7 @@ cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | 
 
 We are left with a variable that equals `C01F9XLF1SE`. This ID can now be passed into a for loop that executes slack API requests. The variable only contains a single ID but if jq returned multiple IDs they would appear in the variable as `C01F9XLF1SE C01EWFV0DV9`. This logic is the basis for all the examples that are shown below and these snippets can be executed at any scale. Imagine a company that has 400+ channels and they want a quick way to find channels that have only a single member. I use this as an example because I have seen channels where only 1 user is a member because either people leave or it was used as a test for a Slack integration and it never gets used afterwards.
 
-# Prerequsiites
+# Prerequisites
 To execute any of the examples that use `admin.*` as the API method, you need the [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) version of Slack. Slack used to have these features available on the [Standard](https://slack.com/intl/en-ca/pricing/standard) plan but deprecated usage of them as of February 2021. All examples without `admin.*` can be executed by anyone with a free workspace using a Bot Token.
 
 ## Create Bot Token
