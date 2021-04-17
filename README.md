@@ -6,7 +6,7 @@
   * [Create User Token](#create-user-token)
 - [Examples](#examples)
   * [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace)
-  * [Add a Bot to all public channels](#add-a-bot-to-all-public-channels)
+  * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
   * [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace)
   * [Export all user emails to a file](#export-all-user-emails-to-a-file)
   * [Export all guest user emails to a file](#export-all-guest-user-emails-to-a-file)
@@ -169,7 +169,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > channels.list.json
 
-## Add a Bot to all public channels
+## Add a bot to all public channels
 ### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
 
