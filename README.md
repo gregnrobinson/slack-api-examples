@@ -232,7 +232,7 @@ done
 #### API Reference: https://api.slack.com/methods/conversations.list
 ```sh                
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
-URL="https://slack.com/api/conversations.list"
+URL="https://slack.com/api/conversations.list?exclude_archived=true&pretty=1"
 
 curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
   $URL > channels.list.json
