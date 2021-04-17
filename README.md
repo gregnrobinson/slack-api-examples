@@ -177,7 +177,7 @@ Useful for creating several channels using one script. Create an array using a f
 #### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
 channel_prefix="dev-"
-channel_count="1"
+channel_count="5"
 
 CHANNEL_NAMES=()
 for ((i=1; i<=$channel_count; i++)); do
@@ -206,7 +206,7 @@ NEW_PREFIX="prod-"
 
 declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$OLD_PREFIX'")) | (.id + "=" + .name)' | sed -e 's/"//g'))
 
-for i in "${arr[@]}" 
+for i in ${arr[@]}
 do
   CHANNEL_ID=${i%=*}
   CHANNEL_NAME=${i#*=}
