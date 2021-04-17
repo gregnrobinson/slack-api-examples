@@ -138,6 +138,9 @@ To execute any of the examples that use `admin.*` as the API method, you need th
     - channels:join
     - channels:read
     - channels:history
+    - groups:write
+    - im:write
+    - mpim:write
     - users:read
     - users:read.email
     - users:profile.read
@@ -158,6 +161,47 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 3. Install the application to the workspace.
 
 # Examples
+
+## Create channels from an array
+Useful for creating many channels quickly
+### API Reference: https://api.slack.com/methods/conversations.create
+```sh
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+CHANNEL_NAMES=("ch-1" "ch-2" "ch-3" "ch-4" "ch-5")
+
+for i in ${CHANNEL_NAMES[@]}; do
+  URL="https://slack.com/api/conversations.create?name=$i&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
+
+## Rename public channel prefixes
+Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to rename.
+### API Reference: https://api.slack.com/methods/conversations.rename
+```sh
+TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
+
+OLD_PREFIX="ch-"
+NEW_PREFIX="channel-"
+
+declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$OLD_PREFIX'")) | (.id + "=" + .name)' | sed -e 's/"//g'))
+
+for i in "${arr[@]}" 
+do
+  CHANNEL_ID=${i%=*}
+  CHANNEL_NAME=${i#*=}
+  
+  URL="https://slack.com/api/conversations.rename?channel=${CHANNEL_ID}&name=${NEW_PREFIX}${CHANNEL_NAME//$OLD_PREFIX}&pretty=1"
+  
+  echo $URL
+  
+  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
 
 ## Export all public channels
 ### API Reference: https://api.slack.com/methods/conversations.list
@@ -183,30 +227,6 @@ CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' 
 
 for ID in $CHANNEL_IDS; do
   URL="https://slack.com/api/conversations.join?channel=$ID&pretty=1"
-  
-  echo $URL
-  
-  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
-done
-```
-
-## Rename public channel prefixes
-*Note: You must first complete the step [Export all public channels](#export-all-public-channels) and [Add a bot to all public channels](#add-a-bot-to-all-channels) before executing*
-
-Useful for finding channels with similar names.
-```sh
-TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
-OLD_PREFIX="t-"
-NEW_PREFIX="tech-"
-
-declare -a arr=($(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$SOURCE_PREFIX'")) | (.id + "=" + .name)' | sed -e 's/"//g'))
-
-for i in "${arr[@]}" 
-do
-  CHANNEL_ID=${i%=*}
-  CHANNEL_NAME=${i#*=}
-  
-  URL="https://slack.com/api/conversations.rename?channel=${CHANNEL_ID}&name=${NEW_PREFIX}${CHANNEL_NAME//$OLD_PREFIX}&pretty=1"
   
   echo $URL
   
