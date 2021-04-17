@@ -10,8 +10,8 @@
   * [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace)
   * [Export all user emails to a file](#export-all-user-emails-to-a-file)
   * [Export all guest user emails to a file](#export-all-guest-user-emails-to-a-file)
-  * [Archive all public Slack channels that have only 1 member](#archive-all-public-slack-channels-that-have-only-1-member)
-  * [Archive all public Slack channels that match a string condition](#archive-all-public-slack-channels-that-match-a-string-condition)
+  * [Archive all public channels that have only 1 member](#archive-all-public-channels-that-have-only-1-member)
+  * [Archive all public channels that match a string condition](#archive-all-public-channels-that-match-a-string-condition)
 - [Reference](#reference)
 # Overview
 
@@ -207,7 +207,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
     COMPANY_DOMAIN=company.com
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
 
-## Archive all public Slack channels that have only 1 member
+## Archive all public channels that have only 1 member
 *Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 
@@ -221,7 +221,7 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
         curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
     done
 
-## Archive all public Slack channels that match a string condition
+## Archive all public channels that match a string condition
 *Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
 
