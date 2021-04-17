@@ -142,8 +142,12 @@ To execute any of the examples that use `admin.*` as the API method, you need th
     - channels:read
     - channels:history
     - users:read
+    - users:read.email
+    - users:profile.read
 
 2. Copy the *Bot User OAuth Token* that starts with `xoxb-` and store it somewhere secure. This will be used to authenticate to to the Slack REST API.
+
+3. Change the name, description and add an icon image to describe 
 
 3. Install the application to the workspace.
 ## Create User Token
@@ -190,6 +194,32 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
     curl -X GET -H "Authorization: Bearer $TOKEN" \
     -H 'Content-type: application/x-www-form-urlencoded' \
     $URL > users.list.json
+
+#### Export all Slack user emails to a file
+Return only the email address attribute and exclude any fields that are `null`.
+    cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
+
+#### Export all Slack Guest user emails to a file
+We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this domain. Only emails that do not contain the company domain in the email address will get exported.
+
+    COMPANY_DOMAIN=company.com
+    cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
+
+## Export the emails for every user in a Slack Workspace
+### API Reference: https://api.slack.com/methods/users.profile.get
+
+    USER_IDS=$(cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g')
+    TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
+
+    for ID in $USER_IDS; do
+        URL="https://slack.com/api/users.profile.get?user=$ID&pretty=1"
+        echo $URL
+        curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+    done
+
+    curl -X GET -H "Authorization: Bearer $TOKEN" \
+    -H 'Content-type: application/x-www-form-urlencoded' \
+    $URL > users.list.json
  
 ## Archive public Slack channels that have only 1 member
 ### API Reference: https://api.slack.com/methods/admin.conversations.archive
@@ -220,7 +250,8 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 # Reference
 
-https://stedolan.github.io/jq/manual/
+- https://stedolan.github.io/jq/manual/
+- https://api.slack.com/methods
 
 
 
