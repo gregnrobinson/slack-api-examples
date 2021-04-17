@@ -178,8 +178,8 @@ cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' 
 ### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
-CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
 TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
+CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name) | .id' | sed -e 's/"//g')
 
 for ID in $CHANNEL_IDS; do
   URL="https://slack.com/api/conversations.join?channel=$ID&pretty=1"
