@@ -165,7 +165,7 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 3. Install the application to the workspace.
 
 ## Set bot token variable
-The code snippets below require the token to be stored as a variable called `TOKEN`
+The code snippets below require the token to be stored as a variable called `TOKEN`.
 ```sh
 export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ```
@@ -173,24 +173,11 @@ export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 # Examples
 
 ## Create channels
-Useful for creating several channels using one script.
+Useful for creating several channels using one script. Create an array using a for loop with however many channels you would like to create to test the speed of operation at scale.
 #### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
-CHANNEL_NAMES=("ch-1" "ch-2" "ch-3" "ch-4" "ch-5")
-
-for i in ${CHANNEL_NAMES[@]}; do
-  URL="https://slack.com/api/conversations.create?name=$i&pretty=1"
-  
-  echo $URL
-  
-  curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
-done
-```
-
-***Optionally, you can create an array using a for loop with however many channels you would like to create to test the speed of operation at scale***
-```sh
-channel_prefix="ch-"
-channel_count="50"
+channel_prefix="dev-"
+channel_count="1"
 
 CHANNEL_NAMES=()
 for ((i=1; i<=$channel_count; i++)); do
@@ -214,8 +201,8 @@ Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename c
 ```sh
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
 
-OLD_PREFIX="ch-"
-NEW_PREFIX="ch-new-"
+OLD_PREFIX="dev-"
+NEW_PREFIX="prod-"
 
 declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$OLD_PREFIX'")) | (.id + "=" + .name)' | sed -e 's/"//g'))
 
@@ -238,11 +225,11 @@ Useful for renaming channels in bulk. Unfortunately Bot tokens can only archive 
 ```sh
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
 
-STRING_MATCH="ch-new-"
+STRING_MATCH="prod-"
 
 declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g'))
 
-for i in "${arr[@]}" 
+for i in "${arr[@]}"
 do
   URL="https://slack.com/api/conversations.archive?channel=$i&pretty=1"
   
