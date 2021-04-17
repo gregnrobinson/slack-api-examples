@@ -199,20 +199,23 @@ To execute the examples using `admin.*` in the request URL, a User Token is requ
 
 ### Export all user emails to a file
 *Note: You must first follow the step [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace) before executing*
+
 Return only the email address attribute and exclude any fields that are `null`.
     
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" > user.emails.list
 
 ### Export all guest user emails to a file
 *Note: You must first follow the step [Export all users in a Slack Workspace](#export-all-users-in-a-slack-workspace) before executing*
+
 We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this domain. Only emails that do **NOT** contain the company domain will get exported.
 
     COMPANY_DOMAIN=company.com
     cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
 
 ## Archive public Slack channels that have only 1 member
-### API Reference: https://api.slack.com/methods/admin.conversations.archive
 *Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
+### API Reference: https://api.slack.com/methods/admin.conversations.archive
+
                 
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .id' | sed -e 's/"//g')
     TOKEN='xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX'
@@ -224,8 +227,9 @@ We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this dom
     done
 
 ## Archive public Slack channels that match a string condition
-### API Reference: https://api.slack.com/methods/admin.conversations.archive
 *Note: You must first follow the step [Export all public channels in a Slack Workspace](#export-all-public-channels-in-a-slack-workspace) before executing*
+### API Reference: https://api.slack.com/methods/admin.conversations.archive
+
 
     STRING_MATCH="website"
     CHANNEL_IDS=$(cat ./channels.list.json | jq '.channels[] | select(.name | contains("'$STRING_MATCH'")) | .id' | sed -e 's/"//g')
