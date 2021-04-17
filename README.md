@@ -4,13 +4,15 @@
 - [Prerequisites](#prerequisites)
   * [Create Bot Token](#create-bot-token)
   * [Create User Token](#create-user-token)
+  * [Set bot token variable](#set-bot-token-variable)
 - [Examples](#examples)
   * [Create channels](#create-channels)
-  * [Rename channel prefixes](#rename-channel-prefixes)
+  * [Rename channels prefixes](#rename-channels-prefixes)
   * [Archive channels](#archive-channels)
   * [Export all public channels](#export-all-public-channels)
   * [Export all public channels that have 1 member](#export-all-public-channels-that-have-1-member)
-  * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
+  * [Add bot to all public channels](#add-bot-to-all-public-channels)
+  * [Export all channels that have have not been used before a date](#export-all-channels-that-have-have-not-been-used-before-a-date)
   * [Export all users](#export-all-users)
   * [Export all user emails](#export-all-user-emails)
   * [Export all guest user emails](#export-all-guest-user-emails)
@@ -143,7 +145,10 @@ To execute any of the examples that use `admin.*` as the API method, you need th
     - channels:read
     - channels:history
     - groups:write
+    - groups:read
     - im:write
+    - im:read
+    - mpim:read
     - mpim:write
     - users:read
     - users:read.email
@@ -247,27 +252,6 @@ URL="https://slack.com/api/conversations.list?exclude_archived=true&pretty=1"
 curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' \
   $URL > channels.list.json
 ```
-## Export all channels that have have not been used before a date
-Useful for finding inactive slack channels by comparing the last_read attribute agaisnt a set date. If the last_read attribute is less than the DATE variable, the name of the slack channel is exported to a file. The script iterates over every public slack channel until complete.
-
-```sh
-DATE="2021-04-01" #YYYY-MM-DD
-
-DATE_EPOCH=$(date -jf "%Y-%m-%d %H:%M:%S" "$DATE 00:00:00" +%s)
-ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list?exclude_archived=true&pretty=1)
-
-declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | .id' | sed -e 's/"//g'))
-
-for i in "${arr[@]}" 
-do
-  URL="https://api.slack.com/api/conversations.info?channel=$i&pretty=1"
-  
-  echo $URL
-  
-  CHANNEL_INFO=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.info?channel=$i&pretty=1)
-  echo $CHANNEL_INFO | jq '.channel | select(.last_read < "'$DATE_EPOCH'").name' >> old.channels.json
-done
-```
 
 ## Export all public channels that have 1 member
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
@@ -275,7 +259,7 @@ done
 cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' | sed -e 's/"//g' > channels.1member.list
 ```
 
-## Add a bot to all public channels
+## Add bot to all public channels
 #### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
@@ -287,6 +271,29 @@ for ID in $CHANNEL_IDS; do
   echo $URL
   
   curl -X POST -H "Authorization: Bearer $TOKEN" -H "application/x-www-form-urlencoded" "$URL"
+done
+```
+
+## Export all channels that have have not been used before a date
+Useful for finding inactive slack channels by comparing the last_read attribute agaisnt a set date. If the last_read attribute is less than the DATE variable, the name of the slack channel is exported to a file. The script iterates over every public slack channel until complete.
+*Note: You must first complete the step [Add bot to all public channels](#add-bot-to-all-public-channels) before executing*
+
+```sh
+BEFORE_DATE="2020-04-26" #YYYY-MM-DD
+
+BEFORE_DATE_EPOCH=$(date -jf "%Y-%m-%d %H:%M:%S" "$BEFORE_DATE 23:00:00" +%s)
+ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list?exclude_archived=true&pretty=1)
+
+declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | .id' | sed -e 's/"//g'))
+
+for i in "${arr[@]}" 
+do
+  URL="https://api.slack.com/api/conversations.info?channel=$i&pretty=1"
+  
+  echo $URL
+  
+  CHANNEL_INFO=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.info?channel=$i&pretty=1)
+  echo $CHANNEL_INFO | jq '.channel | select(.last_read < "'$BEFORE_DATE_EPOCH'").name' | sed -e 's/"//g' >> unused.channels.list
 done
 ```
 ## Export all users
@@ -309,7 +316,7 @@ cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | gre
 
 We use the `COMPANY_DOMAIN` variable to exclude any emails that contain this domain. Only emails that do **NOT** contain the company domain will get exported.
 ```sh
-COMPANY_DOMAIN="company.com"
+COMPANY_DOMAIN="gmail.com"
 
 cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
 ```
