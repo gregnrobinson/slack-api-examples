@@ -174,6 +174,10 @@ The code snippet below requires the token to be stored in a variable called `TOK
 ```sh
 export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ```
+## Install homebrew/jq for Mac
+
+1. https://docs.brew.sh/Installation
+2. https://brewinstall.org/install-jql-on-mac-with-brew/
 
 # Examples
 
