@@ -286,7 +286,7 @@ Useful for finding inactive slack channels by comparing the `last_read` attribut
 ```sh
 BEFORE_DATE="2020-04-26" #YYYY-MM-DD
 
-BEFORE_DATE_EPOCH=$(date -jf "%Y-%m-%d %H:%M:%S" "$BEFORE_DATE 23:00:00" +%s)
+BEFORE_DATE_EPOCH=$(date -jf "%Y-%m-%d %H:%M:%S" "$BEFORE_DATE 00:00:00" +%s)
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list?exclude_archived=true&pretty=1)
 
 declare -a arr=($(echo $ALL_CHANNELS | jq '.channels[] | .id' | sed -e 's/"//g'))
