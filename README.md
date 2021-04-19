@@ -21,11 +21,11 @@
 - [Reference](#reference)
 # Overview
 
-This repository shares examples for interacting with a Slack workspace through the Slack REST API. Using simple iteration coupled with jq we can extract and transform any json dataset using the slack api by running queries against a Slack workspace using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
+This repository shares examples and use cases for interacting with a Slack workspace through the Slack REST API. Using simple iteration coupled with jq we can extract and transform any json dataset using the slack api by running queries against a Slack workspace using [jq complex assignments](https://stedolan.github.io/jq/manual/#Assignment). This can prove to be a powerful solution at scale for automating the management of a Slack workspace of a large company.
 
 # Logic Explanation
 
-Suppose we have the following JSON file named ***channels.list.json*** that contains the public slack channels for a company retrieved using a GET Request with the Slack API.
+Suppose we have the following JSON dataset named ***channels.list.json*** that contains the public slack channels for a company retrieved using a GET Request with the Slack API.
 ```
 {
   "ok": true,
