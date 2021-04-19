@@ -5,7 +5,7 @@
   * [Create Bot Token](#create-bot-token)
   * [Create User Token](#create-user-token)
   * [Set bot token variable](#set-bot-token-variable)
-  * [Install homebrew and jq for mac](#install-homebrew-and-jq-for-mac)
+  * [Install jq](#install-jq)
 - [Examples](#examples)
   * [Create channels](#create-channels)
   * [Rename channels prefixes](#rename-channels-prefixes)
@@ -175,10 +175,9 @@ The code snippet below requires the token to be stored in a variable called `TOK
 ```sh
 export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 ```
-## Install homebrew and jq for Mac
+## Install jq
 
-1. https://docs.brew.sh/Installation
-2. https://brewinstall.org/install-jql-on-mac-with-brew/
+- https://stedolan.github.io/jq/download/
 
 # Examples
 
