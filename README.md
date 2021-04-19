@@ -363,6 +363,7 @@ done
 
 - https://stedolan.github.io/jq/manual/
 - https://api.slack.com/methods
+- https://app.slack.com/plans/T3C8WKKEW?geocode=en-ca
 
 
 
