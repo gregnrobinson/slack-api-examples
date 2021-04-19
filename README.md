@@ -11,7 +11,7 @@
   * [Archive channels](#archive-channels)
   * [Export all public channels](#export-all-public-channels)
   * [Export all public channels that have 1 member](#export-all-public-channels-that-have-1-member)
-  * [Add bot to all public channels](#add-bot-to-all-public-channels)
+  * [Add a bot to all public channels](#add-a-bot-to-all-public-channels)
   * [Export all channels that have have not been used before a date](#export-all-channels-that-have-have-not-been-used-before-a-date)
   * [Export all users](#export-all-users)
   * [Export all user emails](#export-all-user-emails)
@@ -259,7 +259,7 @@ curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-ww
 cat ./channels.list.json | jq '.channels[] | select(.num_members == 1) | .name' | sed -e 's/"//g' > channels.1member.list
 ```
 
-## Add bot to all public channels
+## Add a bot to all public channels
 #### API Reference: https://api.slack.com/methods/conversations.join
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 ```sh
@@ -277,7 +277,7 @@ done
 ## Export all channels that have have not been used before a date
 Useful for finding inactive slack channels by comparing the last_read attribute agaisnt a set date. If the last_read attribute is less than the `BEFORE_DATE` variable, the name of the slack channel is exported to a file. The script iterates over every public slack channel until complete.
 
-*Note: You must first complete the step [Add bot to all public channels](#add-bot-to-all-public-channels) before executing*
+*Note: You must first complete the step [Add bot to all public channels](#add-a-bot-to-all-public-channels) before executing*
 
 ```sh
 BEFORE_DATE="2020-04-26" #YYYY-MM-DD
