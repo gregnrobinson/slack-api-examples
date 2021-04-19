@@ -225,7 +225,7 @@ done
 ```
 
 ## Archive channels
-Useful for renaming channels in bulk. Unfortunately Bot tokens can only archive channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels](#create-channels) step to ensure the Bot token owns all the channels it attempts to archive.
+Useful for archiving channels in bulk. Unfortunately Bot tokens can only archive channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels](#create-channels) step to ensure the Bot token owns all the channels it attempts to archive.
 #### API Reference: https://api.slack.com/methods/conversations.archive
 ```sh
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
