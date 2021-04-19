@@ -5,6 +5,7 @@
   * [Create Bot Token](#create-bot-token)
   * [Create User Token](#create-user-token)
   * [Set bot token variable](#set-bot-token-variable)
+  * [Install homebrew and jq for mac](#install-homebrew-and-jq-for-mac)
 - [Examples](#examples)
   * [Create channels](#create-channels)
   * [Rename channels prefixes](#rename-channels-prefixes)
