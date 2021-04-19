@@ -178,7 +178,7 @@ export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 # Examples
 
 ## Create channels
-Useful for creating several channels using one script. Create an array using a for loop with however many channels you would like to create to test the speed of operation at scale.
+Useful for creating several channels using one script. Create an array using a for loop with however many channels you would like to create to test the speed of operation at scale. Instead of defining the array using a for loop counter you would likely create an array with the values statically.
 #### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
 channel_prefix="dev-"
@@ -201,7 +201,7 @@ done
 ```
 
 ## Rename channels prefixes
-Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to rename.
+Useful for renaming channels in bulk. Unfortunately Bot tokens can only rename channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels](#create-channels) step to ensure the Bot token owns all the channels it attempts to rename.
 #### API Reference: https://api.slack.com/methods/conversations.rename
 ```sh
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
@@ -225,7 +225,7 @@ done
 ```
 
 ## Archive channels
-Useful for renaming channels in bulk. Unfortunately Bot tokens can only archive channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels from an array](#create-channels-from-an-array) step to ensure the Bot token owns all the channels it attempts to archive.
+Useful for renaming channels in bulk. Unfortunately Bot tokens can only archive channels they have created. Unless the Slack workspace type is [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) the script is limited to channels the Bot token owns. This can still be a useful script for free tier workspaces if you create channels using the [Create channels](#create-channels) step to ensure the Bot token owns all the channels it attempts to archive.
 #### API Reference: https://api.slack.com/methods/conversations.archive
 ```sh
 ALL_CHANNELS=$(curl -X GET -H "Authorization: Bearer $TOKEN" -H 'Content-type: application/x-www-form-urlencoded' https://api.slack.com/api/conversations.list)
