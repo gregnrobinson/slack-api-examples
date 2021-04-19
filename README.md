@@ -326,6 +326,8 @@ COMPANY_DOMAIN="gmail.com"
 cat ./users.list.json | jq '.members[] | .profile.email' | sed -e 's/"//g' | grep -v "null" | grep -v "$COMPANY_DOMAIN" > user.guest.emails.list
 ```
 ## Archive all public channels that have only 1 member
+This can only be executed using an [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) subscription.
+
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 #### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
@@ -340,6 +342,8 @@ for ID in $CHANNEL_IDS; do
 done
 ```
 ## Archive all public channels that match a string condition
+This can only be executed using an [Enterprise Grid](https://slack.com/intl/en-ca/enterprise) subscription.
+
 *Note: You must first complete the step [Export all public channels](#export-all-public-channels) before executing*
 #### API Reference: https://api.slack.com/methods/admin.conversations.archive
 ```sh
