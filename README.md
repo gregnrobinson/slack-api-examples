@@ -182,7 +182,7 @@ export TOKEN="xoxb-XXXXXXXXXXXXX-XXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXX"
 # Examples
 
 ## Create channels
-Useful for creating several channels using one script. Create an array using a for loop with however many channels you would like to create to test the speed of operation at scale. Instead of defining the array using a for loop counter you would likely create an array with the values statically.
+Useful for creating several channels using one script. Create an array using a for loop with however many channels you would like to create to test the speed of operation at scale. Instead of defining the array using a for loop counter you would likely create an array with the channel names statically.
 #### API Reference: https://api.slack.com/methods/conversations.create
 ```sh
 channel_prefix="dev-"
