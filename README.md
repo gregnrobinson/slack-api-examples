@@ -277,7 +277,7 @@ done
 ## Export all channels that have have not been used before a date
 Useful for finding inactive slack channels by comparing the last_read attribute agaisnt a set date. If the last_read attribute is less than the `BEFORE_DATE` variable, the name of the slack channel is exported to a file. The script iterates over every public slack channel until complete.
 
-*Note: You must first complete the step [Add bot to all public channels](#add-a-bot-to-all-public-channels) before executing*
+*Note: You must first complete the step [Add a bot to all public channels](#add-a-bot-to-all-public-channels) before executing*
 
 ```sh
 BEFORE_DATE="2020-04-26" #YYYY-MM-DD
